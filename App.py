@@ -1,9 +1,10 @@
+import os
 import streamlit as st
 import pandas as pd
 import joblib
 
-# 加载模型
-model_path = r"C:\Users\汪光韶\Desktop\best_model.joblib"
+# 加载模型，使用相对路径
+model_path = os.path.join(os.path.dirname(__file__), "best_model.joblib")
 best_model = joblib.load(model_path)
 
 # 定义模型需要的特征
