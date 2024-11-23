@@ -1,7 +1,4 @@
 streamlit
 pandas
 joblib
-scikit-learn
-tkinter
-os
-numpy
+openpyxl
