@@ -9,8 +9,8 @@ best_model = joblib.load(model_path)
 
 # 定义模型需要的特征
 features = [
-    'T (℃)', 'M-TiO2', 'M-FeO', 'M-MnO', 'M-MgO',
-    'M-CaO', 'Ol-SiO2', 'Ol-FeO', 'Ol-MnO', 'Ol-MgO', 'Ol-CaO',
+    'T (℃)', 'M-SiO2','M-TiO2','M-Al2O3', 'M-FeO', 'M-MnO', 'M-MgO',
+    'M-CaO', 'M-Na2O','Ol-SiO2', 'Ol-FeO', 'Ol-MnO', 'Ol-MgO', 
     'DV'
 ]
 
