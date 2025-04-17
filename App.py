@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import os
+from io import BytesIO
 
 # 加载模型，使用相对路径
 model_path = os.path.join(os.path.dirname(__file__), "best_model.joblib")
@@ -16,6 +17,20 @@ features = [
 
 # 标题
 st.title("Oxygen Fugacity Prediction Model")
+
+# 添加模板下载功能
+template_df = pd.DataFrame(columns=features)
+template_io = BytesIO()
+with pd.ExcelWriter(template_io, engine='xlsxwriter') as writer:
+    template_df.to_excel(writer, index=False)
+template_io.seek(0)
+
+st.download_button(
+    label="Download Prediction Template",
+    data=template_io,
+    file_name="templates.xlsx",
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
 
 # 文件上传
 uploaded_file = st.file_uploader("Upload an Excel file with feature columns for predictions", type=["xlsx"])
