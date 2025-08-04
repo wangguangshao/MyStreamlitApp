@@ -16,7 +16,7 @@ features = [
 ]
 
 # 标题
-st.title("Oxygen Fugacity Prediction Model")
+st.title("RF V-in-olivine oxybarometry")
 
 # 添加模板下载功能
 template_df = pd.DataFrame(columns=features)
