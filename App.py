@@ -8,37 +8,44 @@ from io import BytesIO
 st.set_page_config(page_title="RF V-in-olivine Oxybarometry", page_icon="🧪", layout="centered")
 
 # -----------------------------
-# 自定义CSS样式（添加背景色与卡片阴影）
+# 样式：全局背景 + 卡片分区样式（可在Streamlit Cloud中生效）
 # -----------------------------
 st.markdown("""
 <style>
-body {
-    background-color: #f5f7fa;
-    font-family: "Helvetica Neue", sans-serif;
+/* 整体背景 */
+.stApp {
+    background-color: #f5f7fa !important;
+    font-family: "Segoe UI", "Helvetica Neue", sans-serif;
 }
 
-/* 内容块卡片样式 */
-.block {
+/* 主体卡片 */
+div[data-testid="stVerticalBlock"] > div {
     background-color: #ffffff;
-    padding: 25px 35px;
     border-radius: 12px;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+    padding: 25px 35px;
     margin-bottom: 25px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.07);
 }
 
-/* expander内边距 */
+/* expander 样式 */
 .streamlit-expanderHeader {
-    font-weight: 600 !important;
     background-color: #f0f2f6 !important;
-    border-radius: 6px;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
 }
 
-/* 信息提示框 */
+/* 提示框 */
 .stAlert {
     background-color: #eef7ff !important;
+    border-left: 4px solid #2b7de9 !important;
 }
 
-/* 分隔线 */
+/* 侧边栏样式 */
+[data-testid="stSidebar"] {
+    background-color: #edf1f5 !important;
+}
+
+/* 分割线 */
 hr {
     border: 1px solid #dee2e6;
 }
@@ -66,15 +73,16 @@ lang = st.sidebar.selectbox("🌐 Language / 语言", ["English", "中文"])
 # 英文界面内容
 # -----------------------------
 if lang == "English":
-    st.markdown("<div class='block'>", unsafe_allow_html=True)
     st.title("🧪 RF V-in-olivine Oxybarometry")
 
     st.markdown("""
 ### 🌋 Overview
-This web-based platform predicts **oxygen fugacity (ΔFMQ)** using a **Random Forest (RF)** model calibrated on global olivine–melt datasets. It implements the **V-in-olivine oxybarometer**, which relates the partitioning of vanadium between olivine and melt to redox state.
+This web-based platform predicts **oxygen fugacity (ΔFMQ)** using a **Random Forest (RF)** model calibrated on global olivine–melt datasets.  
+It implements the **V-in-olivine oxybarometer**, which relates the partitioning of vanadium between olivine and melt to redox state.
 
 **Scientific Background**  
-Oxygen fugacity (fO₂) is a key factor controlling the speciation and behavior of redox-sensitive elements (Fe, V, Cr, S) in magmatic systems. This RF-based oxybarometer provides a robust, non-linear model for estimating ΔFMQ from chemical compositions, suitable for both **lunar** and **terrestrial** basaltic systems.
+Oxygen fugacity (fO₂) is a key factor controlling the speciation and behavior of redox-sensitive elements (Fe, V, Cr, S) in magmatic systems.  
+This RF-based oxybarometer provides a robust, non-linear model for estimating ΔFMQ from chemical compositions, suitable for both **lunar** and **terrestrial** basaltic systems.
 
 **Applicable range:**  
 - ΔFMQ: −6.8 → +6.5  
@@ -84,15 +92,13 @@ Oxygen fugacity (fO₂) is a key factor controlling the speciation and behavior 
 
 **Model Reference:**  
 Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025).  
-A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts.  
-*Earth and Planetary Science Letters, 671,* 119692.  
+*A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts.*  
+**Earth and Planetary Science Letters, 671, 119692.**  
 [https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
 """)
 
     st.info("💡 ‘M-’ prefix denotes the composition of the **equilibrium melt**, while ‘Ol-’ prefix denotes the composition of the **olivine phase**.")
-    st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("<div class='block'>", unsafe_allow_html=True)
     with st.expander("📘 Detailed User Guide and Input Specifications"):
         st.markdown("""
 ### 1. Purpose
@@ -123,27 +129,7 @@ Predict **oxygen fugacity (ΔFMQ)** from olivine–melt equilibrium chemistry us
 3. 📤 Upload `.xlsx` file  
 4. ⚙️ The model predicts ΔFMQ automatically  
 5. 💾 Download the results
-
-### 6. Output
-- All input columns  
-- New column: **Predicted ΔFMQ**
-
-### 7. Troubleshooting
-| Issue | Solution |
-|--------|-----------|
-| Upload fails | Check file format (`.xlsx`) and headers |
-| Missing predictions | Ensure all fields are numeric |
-| Unrealistic values | Confirm units are wt%, not ppm |
-| Browser problems | Use Chrome / Firefox without blockers |
-
----
-**Reference:**  
-Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025).  
-A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts.  
-*Earth and Planetary Science Letters, 671,* 119692.  
-[https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
 """)
-    st.markdown("</div>", unsafe_allow_html=True)
 
     sidebar_title = "🔧 Workflow Steps"
     download_label = "⬇️ Download Excel Template"
@@ -159,7 +145,6 @@ A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fug
 # 中文界面内容
 # -----------------------------
 else:
-    st.markdown("<div class='block'>", unsafe_allow_html=True)
     st.title("🧪 基于随机森林的橄榄石钒分配氧逸度计 (RF V-in-olivine Oxybarometry)")
 
     st.markdown("""
@@ -177,18 +162,15 @@ else:
 
 **模型参考文献：**  
 Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025).  
-A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts.  
-*Earth and Planetary Science Letters, 671,* 119692.  
+*A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts.*  
+**Earth and Planetary Science Letters, 671, 119692.**  
 [https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
 """)
 
     st.info("💡 ‘M-’ 前缀表示**平衡熔体成分**，‘Ol-’ 前缀表示**橄榄石成分**。")
-    st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown("<div class='block'>", unsafe_allow_html=True)
     with st.expander("📘 使用说明与输入参数定义"):
         st.markdown("""（此处保持原内容不变）""")
-    st.markdown("</div>", unsafe_allow_html=True)
 
     sidebar_title = "🔧 操作步骤"
     download_label = "⬇️ 下载预测模板"
@@ -201,7 +183,7 @@ A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fug
     info_text = "👈 请在侧边栏上传 Excel 文件开始预测。"
 
 # -----------------------------
-# 侧边栏与预测逻辑（保持不变）
+# 侧边栏 + 文件上传逻辑
 # -----------------------------
 st.sidebar.header(sidebar_title)
 
