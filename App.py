@@ -94,10 +94,7 @@ Predict **oxygen fugacity (ΔFMQ)** from olivine–melt equilibrium chemistry us
 
 ---
 **Reference:**  
-Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025).  
-*A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts.*  
-**Earth and Planetary Science Letters, 671, 119692.**  
-[https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
+Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025). A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts. Earth and Planetary Science Letters, 671, 119692. [https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
 """)
 
     sidebar_title = "🔧 Workflow Steps"
