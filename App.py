@@ -30,7 +30,7 @@ if lang == "English":
 
     st.markdown("""
 ### 🌋 Overview
-This web-based platform predicts **oxygen fugacity (ΔFMQ)** using a **Random Forest (RF)** model calibrated on global olivine–melt datasets. It implements the **V-in-olivine oxybarometer**, which relates the partitioning of vanadium between olivine and melt to redox state.
+This web-based platform predicts **oxygen fugacity (ΔFMQ)** using a **Random Forest (RF)** model calibrated on olivine–melt datasets. It implements the **V-in-olivine oxybarometer**, which relates the partitioning of vanadium between olivine and melt to redox state.
 
 **Scientific Background**  
 Oxygen fugacity (fO₂) is a key factor controlling the speciation and behavior of redox-sensitive elements (Fe, V, Cr, S) in magmatic systems. This RF-based oxybarometer provides a robust, non-linear model for estimating ΔFMQ from chemical compositions, suitable for both **lunar** and **terrestrial** basaltic systems.
@@ -115,7 +115,7 @@ else:
 
     st.markdown("""
 ### 🌋 概述
-本网页工具基于全球橄榄石–熔体实验与自然样品数据库，利用**随机森林 (Random Forest, RF)** 建立的机器学习模型，预测岩浆体系的**氧逸度 (ΔFMQ)**。
+本网页工具基于橄榄石及其平衡熔体实验岩石学数据库，利用**随机森林 (Random Forest, RF)** 建立的机器学习模型，预测岩浆体系的**氧逸度 (ΔFMQ)**。
 
 **科学背景**  
 氧逸度 (fO₂) 是控制岩浆体系中氧化还原敏感元素（如 Fe、V、Cr、S）行为的关键参数。本模型基于 **V-in-olivine 氧逸度计**，通过橄榄石与平衡熔体间钒的分配行为估算体系氧化还原状态，适用于地球和月球玄武质岩浆体系。
