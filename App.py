@@ -7,37 +7,47 @@ from io import BytesIO
 # 页面配置
 st.set_page_config(page_title="RF V-in-olivine Oxybarometry", page_icon="🧪", layout="centered")
 
-# 自定义样式（仅视觉增强）
+# -----------------------------
+# 自定义CSS样式（添加背景色与卡片阴影）
+# -----------------------------
 st.markdown("""
 <style>
-/* 全局字体和背景 */
 body {
     background-color: #f5f7fa;
-    font-family: 'Helvetica', sans-serif;
+    font-family: "Helvetica Neue", sans-serif;
 }
 
-/* 区块容器样式 */
+/* 内容块卡片样式 */
 .block {
     background-color: #ffffff;
-    padding: 25px;
+    padding: 25px 35px;
     border-radius: 12px;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.08);
-    margin-bottom: 20px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
 }
 
-/* 信息提示区 */
+/* expander内边距 */
+.streamlit-expanderHeader {
+    font-weight: 600 !important;
+    background-color: #f0f2f6 !important;
+    border-radius: 6px;
+}
+
+/* 信息提示框 */
 .stAlert {
-    background-color: #f0f8ff !important;
+    background-color: #eef7ff !important;
 }
 
-/* 分隔线颜色 */
+/* 分隔线 */
 hr {
     border: 1px solid #dee2e6;
 }
 </style>
 """, unsafe_allow_html=True)
 
+# -----------------------------
 # 加载模型
+# -----------------------------
 model_path = os.path.join(os.path.dirname(__file__), "best_model.joblib")
 best_model = joblib.load(model_path)
 
@@ -73,7 +83,10 @@ Oxygen fugacity (fO₂) is a key factor controlling the speciation and behavior 
 - Melt SiO₂: 35 → 60 wt%
 
 **Model Reference:**  
-Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025). A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts. Earth and Planetary Science Letters, 671, 119692. [https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
+Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025).  
+A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts.  
+*Earth and Planetary Science Letters, 671,* 119692.  
+[https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
 """)
 
     st.info("💡 ‘M-’ prefix denotes the composition of the **equilibrium melt**, while ‘Ol-’ prefix denotes the composition of the **olivine phase**.")
@@ -125,7 +138,10 @@ Predict **oxygen fugacity (ΔFMQ)** from olivine–melt equilibrium chemistry us
 
 ---
 **Reference:**  
-Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025). A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts. Earth and Planetary Science Letters, 671, 119692. [https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
+Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025).  
+A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts.  
+*Earth and Planetary Science Letters, 671,* 119692.  
+[https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
 """)
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -160,7 +176,10 @@ else:
 - 熔体 SiO₂: 35 → 60 wt%
 
 **模型参考文献：**  
-Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025). A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts. Earth and Planetary Science Letters, 671, 119692. [https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
+Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025).  
+A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts.  
+*Earth and Planetary Science Letters, 671,* 119692.  
+[https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
 """)
 
     st.info("💡 ‘M-’ 前缀表示**平衡熔体成分**，‘Ol-’ 前缀表示**橄榄石成分**。")
@@ -180,3 +199,54 @@ Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025).
     missing_text = "⚠️ 缺少列："
     error_text = "❌ 文件处理失败："
     info_text = "👈 请在侧边栏上传 Excel 文件开始预测。"
+
+# -----------------------------
+# 侧边栏与预测逻辑（保持不变）
+# -----------------------------
+st.sidebar.header(sidebar_title)
+
+template_df = pd.DataFrame(columns=features)
+template_io = BytesIO()
+with pd.ExcelWriter(template_io, engine='xlsxwriter') as writer:
+    template_df.to_excel(writer, index=False)
+template_io.seek(0)
+
+st.sidebar.download_button(
+    label=download_label,
+    data=template_io,
+    file_name="prediction_template.xlsx",
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+st.sidebar.divider()
+uploaded_file = st.sidebar.file_uploader(upload_label, type=["xlsx"])
+
+if uploaded_file is not None:
+    try:
+        with st.spinner(process_text):
+            input_data = pd.read_excel(uploaded_file)
+            missing_cols = [col for col in features if col not in input_data.columns]
+            if missing_cols:
+                st.error(f"{missing_text}{', '.join(missing_cols)}")
+            else:
+                new_X = input_data[features]
+                input_data["Predicted ΔFMQ"] = best_model.predict(new_X)
+
+                st.success(complete_text)
+                st.dataframe(input_data.head(10))
+
+                output_io = BytesIO()
+                with pd.ExcelWriter(output_io, engine='xlsxwriter') as writer:
+                    input_data.to_excel(writer, index=False)
+                output_io.seek(0)
+
+                st.download_button(
+                    label=result_label,
+                    data=output_io,
+                    file_name="predicted_results.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+    except Exception as e:
+        st.error(f"{error_text}{e}")
+else:
+    st.info(info_text)
