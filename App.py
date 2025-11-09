@@ -1,11 +1,11 @@
-import streamlit as st
+import streamlit as st 
 import pandas as pd
 import joblib
 import os
 from io import BytesIO
 
 # 页面配置
-st.set_page_config(page_title="RF V-in-olivine Oxybarometry", page_icon="🧪", layout="centered")
+st.set_page_config(page_title="A CatBoost-based model for scandium (Sc) partitioning between clinopyroxene and its equilibrium melt.", page_icon="🧪", layout="centered")
 
 # 加载模型
 model_path = os.path.join(os.path.dirname(__file__), "best_model.joblib")
@@ -13,8 +13,9 @@ best_model = joblib.load(model_path)
 
 # 特征定义
 features = [
-    'T (℃)', 'M-SiO2','M-TiO2','M-Al2O3', 'M-FeO', 'M-MnO', 'M-MgO',
-    'M-CaO', 'M-Na2O','Ol-SiO2', 'Ol-FeO', 'Ol-MnO', 'Ol-MgO', 'DV'
+    'Melt-Si', 'Melt-Ti', 'Melt-Al', 'Melt-Fe', 'Melt-Mn', 'Melt-Mg', 'Melt-Ca', 'Melt-Na',
+    'Melt-K', 'Melt-P', 'Cpx-Si', 'Cpx-Ti', 'Cpx-Fe', 'Cpx-Mn', 'Cpx-Mg',
+    'Cpx-Ca', 'Cpx-Na', 'Cpx-K', 'Cpx-Cr', 'Cpx-IVAl', 'Cpx-VIAl', 'P (GPa)', 'T (K)'
 ]
 
 # -----------------------------
@@ -26,75 +27,67 @@ lang = st.sidebar.selectbox("🌐 Language / 语言", ["English", "中文"])
 # 英文界面内容
 # -----------------------------
 if lang == "English":
-    st.title("🧪 RF V-in-olivine Oxybarometry")
+    st.title("🧪 A CatBoost-based model for scandium (Sc) partitioning between clinopyroxene and its equilibrium melt.")
 
     st.markdown("""
 ### 🌋 Overview
-This web-based platform predicts **oxygen fugacity (ΔFMQ)** using a **Random Forest (RF)** model calibrated on olivine–melt datasets. It implements the **V-in-olivine oxybarometer**, which relates the partitioning of vanadium between olivine and melt to redox state.
+This web-based platform predicts the **scandium partition coefficient (DSc)** between **clinopyroxene (cpx)** and its **equilibrium melt** using a **CatBoost** regression model trained on clinopyroxene–melt datasets.
 
 **Scientific Background**  
-Oxygen fugacity (fO₂) is a key factor controlling the speciation and behavior of redox-sensitive elements (Fe, V, Cr, S) in magmatic systems. This RF-based oxybarometer provides a robust, non-linear model for estimating ΔFMQ from chemical compositions, suitable for both **lunar** and **terrestrial** basaltic systems.
+Mineral–melt partitioning captures how trace elements (e.g., Sc) distribute between crystalline phases and coexisting liquids, governed by **temperature (T)**, **pressure (P)**, **melt composition/structure**, and **crystal-chemical parameters** (e.g., IVAl, VIAl) in clinopyroxene. Data-driven models offer flexible, non-linear mappings from composition and P–T to **DSc**.
 
-**Applicable range:**  
-- ΔFMQ: −6.8 → +6.5  
-- Temperature: 1025°C → 1530°C  
-- Melt MgO: 3.5 → 27.5 wt%  
-- Melt SiO₂: 35 → 60 wt%
-
-**Model Reference:**  
-Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025). A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts. Earth and Planetary Science Letters, 671, 119692. [https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
+**What this tool does**  
+- Input: melt and clinopyroxene compositions (as given by the template), with **P (GPa)** and **T (K)**.  
+- Output: **Predicted DSc** (clinopyroxene–melt scandium partition coefficient).
 """)
 
-    st.info("💡 ‘M-’ prefix denotes the composition of the **equilibrium melt**, while ‘Ol-’ prefix denotes the composition of the **olivine phase**.")
+    st.info("💡 Prefix **Melt-** denotes the composition of the equilibrium melt; prefix **Cpx-** denotes the composition of clinopyroxene.")
 
     st.divider()
 
     with st.expander("📘 Detailed User Guide and Input Specifications"):
         st.markdown("""
 ### 1. Purpose
-Predict **oxygen fugacity (ΔFMQ)** from olivine–melt equilibrium chemistry using the RF V-in-olivine oxybarometer.
+Predict the **clinopyroxene–melt scandium partition coefficient (DSc)** from melt/cpx chemistry and **P–T** using a **CatBoost** model.
 
 ### 2. System Requirements
-- Modern browser (Chrome / Firefox)
-- Stable internet connection
+- Modern browser (Chrome / Firefox)  
+- Stable internet connection  
 - No installation or login required
 
 ### 3. Input File Requirements
 - Format: .xlsx (Excel), ≤200 MB  
 - Use the downloadable **template** to ensure correct column headers  
-- All values must be **numeric**, in **wt%**, using decimal points (e.g., 49.23 not 49,23)
+- All values must be **numeric**; units must be consistent with the template headers
 
 ### 4. Input Parameter Definitions
 
-| Group | Prefix | Parameter | Description |
-|--------|---------|------------|--------------|
-| **Temperature** | — | T (℃) | Temperature in Celsius |
-| **Equilibrium Melt Composition** | M- | SiO2, TiO2, Al2O3, FeO, MnO, MgO, CaO, Na2O | Major oxides (wt%) in melt |
-| **Olivine Composition** | Ol- | SiO2, FeO, MnO, MgO | Major oxides (wt%) in olivine |
-| **Partition Coefficient** | — | DV | Vanadium partition coefficient between olivine and melt |
+| Group | Prefix | Parameters | Description |
+|------|--------|------------|-------------|
+| **Pressure** | — | P (GPa) | Pressure in gigapascals |
+| **Temperature** | — | T (K) | Temperature in Kelvin |
+| **Equilibrium Melt Composition** | Melt- | Si, Ti, Al, Fe, Mn, Mg, Ca, Na, K, P | Melt compositional variables (as required by the model) |
+| **Clinopyroxene Composition** | Cpx- | Si, Ti, Fe, Mn, Mg, Ca, Na, K, Cr, IVAl, VIAl | Clinopyroxene crystal-chemical parameters |
+| **Target** | — | DSc | Sc partition coefficient (cpx/melt) |
 
 ### 5. Workflow
 1. 📥 Download the template  
 2. ✍️ Fill in your data  
-3. 📤 Upload .xlsx file  
-4. ⚙️ The model predicts ΔFMQ automatically  
+3. 📤 Upload the .xlsx file  
+4. ⚙️ The model predicts **DSc** automatically  
 5. 💾 Download the results
 
 ### 6. Output
 - All input columns  
-- New column: **Predicted ΔFMQ**
+- New column: **Predicted DSc**
 
 ### 7. Troubleshooting
 | Issue | Solution |
-|--------|-----------|
+|------|----------|
 | Upload fails | Check file format (.xlsx) and headers |
 | Missing predictions | Ensure all fields are numeric |
-| Unrealistic values | Confirm units are wt%, not ppm |
+| Odd results | Verify units and header names match the template |
 | Browser problems | Use Chrome / Firefox without blockers |
-
----
-**Reference:**  
-Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025). A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts. Earth and Planetary Science Letters, 671, 119692. [https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
 """)
 
     sidebar_title = "🔧 Workflow Steps"
@@ -111,76 +104,67 @@ Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025).
 # 中文界面内容
 # -----------------------------
 else:
-    st.title("🧪 基于随机森林的橄榄石钒分配氧逸度计 (RF V-in-olivine Oxybarometry)")
+    st.title("🧪 基于CatBoost的单斜辉石—熔体钪分配系数（DSc）预测模型")
 
     st.markdown("""
 ### 🌋 概述
-本网页工具基于橄榄石及其平衡熔体实验岩石学数据库，利用**随机森林 (Random Forest, RF)** 建立的机器学习模型，预测岩浆体系的**氧逸度 (ΔFMQ)**。
+本网页工具使用 **CatBoost** 回归模型，根据**单斜辉石（Cpx）**与**平衡熔体（Melt）**的组成以及 **P–T 条件**，预测二者之间的**钪分配系数（DSc）**。
 
 **科学背景**  
-氧逸度 (fO₂) 是控制岩浆体系中氧化还原敏感元素（如 Fe、V、Cr、S）行为的关键参数。本模型基于 **V-in-olivine 氧逸度计**，通过橄榄石与平衡熔体间钒的分配行为估算体系氧化还原状态，适用于地球和月球玄武质岩浆体系。
+矿物—熔体分配系数反映微量元素（如 Sc）在晶体与熔体间的分配行为，受**温度（T）**、**压力（P）**、**熔体成分/结构**以及**晶体化学参量**（如 IVAl、VIAl）共同控制。数据驱动模型可在复杂的成分与 P–T 空间中，对 **DSc** 进行稳健的非线性预测。
 
-**适用范围：**  
-- ΔFMQ: −6.8 → +6.5  
-- 温度: 1025°C → 1530°C  
-- 熔体 MgO: 3.5 → 27.5 wt%  
-- 熔体 SiO₂: 35 → 60 wt%
-
-**模型参考文献：**  
-Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025). A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts. Earth and Planetary Science Letters, 671, 119692. [https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
+**工具功能**  
+- 输入：模板规定的熔体与单斜辉石组成变量，以及 **P (GPa)** 与 **T (K)**；  
+- 输出：**Predicted DSc**（单斜辉石—熔体钪分配系数）。
 """)
 
-    st.info("💡 ‘M-’ 前缀表示**平衡熔体成分**，‘Ol-’ 前缀表示**橄榄石成分**。")
+    st.info("💡 **Melt-** 前缀表示平衡熔体组成；**Cpx-** 前缀表示单斜辉石组成（含 IVAl、VIAl 等晶体化学参量）。")
 
     st.divider()
 
     with st.expander("📘 使用说明与输入参数定义"):
         st.markdown("""
 ### 1. 工具简介
-本工具通过**橄榄石–熔体平衡组成**预测氧逸度 (ΔFMQ)，基于随机森林 (RF) 算法的 V-in-olivine 氧逸度计。
+基于 **CatBoost** 的数据驱动模型，从熔体/单斜辉石组成与 **P–T** 条件预测**钪分配系数 DSc（cpx/melt）**。
 
 ### 2. 系统要求
-- 现代浏览器（推荐 Chrome 或 Firefox）  
+- 现代浏览器（Chrome / Firefox）  
 - 稳定网络连接  
-- 无需安装或注册
+- 无需安装或登录
 
 ### 3. 输入文件要求
-- 格式：.xlsx (Excel)，最大 200 MB  
-- 请使用提供的模板以确保列名正确  
-- 所有数值需为**数字**、以 **wt%** 表示，使用小数点（如 49.23）
+- 格式：.xlsx（Excel），≤200 MB  
+- 请使用提供的**模板**以确保列名一致  
+- 所有取值需为**数值型**；单位与模板保持一致
 
 ### 4. 输入参数定义
 
 | 参数组 | 前缀 | 参数 | 说明 |
-|--------|------|------|------|
-| **温度** | — | T (℃) | 温度（摄氏度） |
-| **平衡熔体成分** | M- | SiO2, TiO2, Al2O3, FeO, MnO, MgO, CaO, Na2O | 熔体主要氧化物组成 (wt%) |
-| **橄榄石成分** | Ol- | SiO2, FeO, MnO, MgO | 橄榄石主要氧化物组成 (wt%) |
-| **分配系数** | — | DV | 橄榄石–熔体间钒的分配系数 |
+|------|------|------|------|
+| **压力** | — | P (GPa) | 压力（GPa） |
+| **温度** | — | T (K) | 温度（K） |
+| **平衡熔体成分** | Melt- | Si, Ti, Al, Fe, Mn, Mg, Ca, Na, K, P | 熔体组成变量（按模板提供） |
+| **单斜辉石成分** | Cpx- | Si, Ti, Fe, Mn, Mg, Ca, Na, K, Cr, IVAl, VIAl | 单斜辉石晶体化学参量 |
+| **预测目标** | — | DSc | 钪分配系数（cpx/melt） |
 
 ### 5. 使用流程
-1. 📥 下载 Excel 模板  
+1. 📥 下载模板  
 2. ✍️ 填写样品数据  
 3. 📤 上传 .xlsx 文件  
-4. ⚙️ 模型自动计算 ΔFMQ  
-5. 💾 下载预测结果
+4. ⚙️ 自动计算 **DSc**  
+5. 💾 下载结果
 
 ### 6. 输出说明
-输出文件包含：
 - 原始输入列  
-- 新增列：**Predicted ΔFMQ**
+- 新增列：**Predicted DSc**
 
 ### 7. 常见问题
 | 问题 | 解决方法 |
 |------|----------|
-| 无法上传 | 检查文件格式与列名是否正确 |
-| 无预测结果 | 确认输入中无空值或非数字项 |
-| 预测异常 | 确认输入单位为 wt%，而非 ppm |
-| 浏览器异常 | 使用 Chrome / Firefox 并关闭脚本拦截 |
-
----
-**参考文献：**  
-Wang, G.-S., Bai, Z.-J., Hu, W.-J., Gao, J.-F., Zhu, W.-G., & Bai, Y.-X. (2025). A machine learning-based V-in-olivine oxybarometer for characterizing oxygen fugacity in lunar and terrestrial basalts. Earth and Planetary Science Letters, 671, 119692. [https://doi.org/10.1016/j.epsl.2025.119692](https://doi.org/10.1016/j.epsl.2025.119692)
+| 上传失败 | 检查文件格式与列名是否正确 |
+| 无预测结果 | 确认所有字段为数值型 |
+| 结果异常 | 核对单位与列名是否与模板一致 |
+| 浏览器问题 | 使用 Chrome / Firefox 并关闭脚本拦截 |
 """)
 
     sidebar_title = "🔧 操作步骤"
@@ -226,7 +210,8 @@ if uploaded_file is not None:
                 st.error(f"{missing_text}{', '.join(missing_cols)}")
             else:
                 new_X = input_data[features]
-                input_data["Predicted ΔFMQ"] = best_model.predict(new_X)
+                # ⬇⬇⬇ 输出列名改为 Predicted DSc（其余逻辑不变）
+                input_data["Predicted DSc"] = best_model.predict(new_X)
 
                 st.success(complete_text)
                 st.dataframe(input_data.head(10))
