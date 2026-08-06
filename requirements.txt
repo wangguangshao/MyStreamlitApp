@@ -1,8 +1,16 @@
+# Web application and data processing
 streamlit
 pandas
-joblib
-scikit-learn
 numpy
-cython
+joblib
 openpyxl
 xlsxwriter>=3.1.2
+
+# Machine-learning model runtime and training
+scikit-learn
+catboost
+cython
+
+# Model interpretation and plotting used during training
+matplotlib
+shap
