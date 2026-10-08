@@ -126,7 +126,7 @@ MODELS: dict[str, dict[str, Any]] = {
         "model_type": "oxybarometer",
         "features": [
             "Mt-SiO2", "Mt-Al₂O₃", "Mt-TiO2", "Mt-FeO", "Mt-MnO", "Mt-MgO", "Mt-CaO",
-            "Mt-Na2O", "Mt-K2O", "Cpx-SiO2", "Cpx-TiO2", "Cpx-Al2O3",
+            "Mt-Na2O", "Mt-K2O", "Cpx-SiO2", "Cpx-TiO2", "Cpx-Al2O3","Cpx-FeO",
             "Cpx-MnO", "Cpx-MgO", "Cpx-CaO", "Cpx-Na2O", "Cpx-K2O",
             "T (C)", "Dv",
         ],
